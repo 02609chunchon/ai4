@@ -70,14 +70,49 @@ st.markdown("---")
 CONTENT_BY_LABEL: dict[str, dict[str, list[str]]] = {
 
      labels[0]: {
-       "texts": ["알프레도 소스 또는 이와 유사한 크림 기반의 소스를 사용하는 파스타 요리이다", "느끼한 양식이라고 하면 가장 먼저 떠오르는 메뉴이기도 하다.", "지역별 스타일 차이"],
-       "images": ["https://recipe1.ezmember.co.kr/cache/recipe/2016/08/01/852bfdb3627182aa05afa4a40d6f2c4d1.jpg"],
-       "videos": ["https://www.youtube.com/watch?v=KIBZmn4KNXc"]
+       "texts": ["단풍", "ㄴ 상태
+# ======================
+if "img_bytes" not in st.session_state:
+    st.session_state.img_bytes = None
+if "last_prediction" not in st.session_state:
+    st.session_state.last_prediction = None
+
+# ======================
+# 모델 로드
+# ======================
+FILE_ID = st.secrets.get("GDRIVE_FILE_ID", "1NB6a12WJ3U4-T8TAyWUufr-hmLKbvfjp")
+MODEL_PATH = st.secrets.get("MODEL_PATH", "model.pkl")
+
+@st.cache_resource
+def load_model_from_drive(file_id: str, output_path: str):
+    if not os.path.exists(output_path):
+        url = f"https://drive.google.com/uc?id={file_id}"
+        gdown.download(url, output_path, quiet=False)
+    return load_learner(output_path, cpu=True)
+
+with st.spinner("🤖 모델 로드 중..."):
+    learner = load_model_from_drive(FILE_ID, MODEL_PATH)
+st.success("✅ 모델 로드 완료")
+
+labels = [str(x) for x in learner.dls.vocab]
+st.write(f"**분류 가능한 항목:** `{', '.join(labels)}`")
+st.markdown("---")
+
+# ======================
+# 라벨 이름 매핑: 여기를 채우세요!
+# 각 라벨당 최대 3개씩 표시됩니다.
+# ======================
+CONTENT_BY_LABEL: dict[str, dict[str, list[str]]] = {
+
+     labels[0]: {
+       "texts": ["단풍나무의 잎", "단풍 현상은 계절 변화로 식물의 잎의 색이 변하는 현상이다", "한국인이 사랑하는 나무 3위"],
+       "images": ["https://image.utoimage.com/preview/cp868526/2016/11/201611015362_500.jpg"],
+       "videos": ["https://www.youtube.com/watch?v=GEM-b0zHqik"]
      },
 labels[1]: {
-       "texts": ["이탈리아에서는 주로 포모도로 파스타라고 불린다", "토마토 베이스에 월계수잎, 올리브유등을 넣은 소스가 특징이다", "지역별_스타일_차이"],
-       "images": ["https://recipe1.ezmember.co.kr/cache/recipe/2019/03/03/fca1b1c8f05592f409b6fbe702e2112a1.jpg"],
-       "videos": ["https://www.youtube.com/watch?v=258sV5v3O0Q"] }
+       "texts": ["단풍나무의 잎", "단풍 현상이 생기기전 봄과 여름의 단풍나무잎", "한국인이 사랑하는 나무 3위"],
+       "images": ["https://file.simpol.co.kr/data/shopimages/product/302420359/202103/008009000000009948.png"],
+       "videos": ["https://www.youtube.com/watch?v=D9YX0VYDafU"] }
 }
 # ======================
 # 유틸
