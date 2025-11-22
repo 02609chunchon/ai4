@@ -67,10 +67,7 @@ st.markdown("---")
 # 라벨 이름 매핑: 여기를 채우세요!
 # 각 라벨당 최대 3개씩 표시됩니다.
 # ======================
-CONTENT_BY_LABEL: dict[str, dict[str, list[str]]] = {
-
-     labels[0]: {
-       "texts": ["단풍", "ㄴ 상태
+CONTENT_BY_LABEL: dict[str, dict[str, list[str]]] = {}
 # ======================
 if "img_bytes" not in st.session_state:
     st.session_state.img_bytes = None
